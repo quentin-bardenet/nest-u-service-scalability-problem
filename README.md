@@ -2,6 +2,8 @@
 
 The purpose of this project is just to provide basic code to highlight structural problem with microservice event based in scalable architecture
 
+_See solution on last section_
+
 # What the project is composed to ?
 
 **Gateway** -> is the API Gateway ion charge of request routing
@@ -32,6 +34,37 @@ Launch 2 intances of mail service or push notif services
 Post request on `http://localhost:3000/posts`with any body.
 As you can see, a message is logged on 3 instances ...
 
-# An idea ?
+# :white_check_mark: Solution
 
-If you have any idea to solde it, please feel free to create PR or discussion on issues
+To solve this proble I simply change the trasporter.
+Use NATS instead of Redis because it's possible to set `queue`option
+
+example of `main.js` file
+```
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import {  MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
+const logger = new Logger();
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule, {});
+
+  const configService = app.get<ConfigService>(ConfigService);
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.NATS,
+    options: {
+      url: configService.get<string>('NATS_ENDPOINT'),
+      queue: 'mail_queue',
+    },
+  });
+
+  await app.startAllMicroservices(() =>
+    logger.log('Mail service is listening'),
+  );
+}
+bootstrap();
+```
