@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -14,12 +14,12 @@ import { AppService } from './app.service';
   providers: [
     AppService,
     {
-      provide: 'REDIS_SERVICE',
+      provide: 'CLIENT_SERVICE',
       useFactory: (configService: ConfigService) => {
         return ClientProxyFactory.create({
-          transport: Transport.REDIS,
+          transport: Transport.NATS,
           options: {
-            url: configService.get<string>('REDIS_ENDPOINT'),
+            url: configService.get<string>('NATS_ENDPOINT'),
           },
         });
       },

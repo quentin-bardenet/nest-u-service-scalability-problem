@@ -12,9 +12,9 @@ import { UsersService } from './users.service';
       provide: 'USER_SERVICE',
       useFactory: (configService: ConfigService) => {
         return ClientProxyFactory.create({
-          transport: Transport.REDIS,
+          transport: Transport.NATS,
           options: {
-            url: configService.get<string>('REDIS_ENDPOINT'),
+            url: configService.get<string>('NATS_ENDPOINT'),
           },
         });
       },

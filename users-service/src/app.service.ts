@@ -6,7 +6,7 @@ export class AppService {
   private users = [];
 
   constructor(
-    @Inject('REDIS_SERVICE') private readonly redisClient: ClientProxy,
+    @Inject('CLIENT_SERVICE') private readonly client: ClientProxy,
   ) {}
 
   createUser(user: any) {
@@ -15,7 +15,7 @@ export class AppService {
     this.users.push(newUser);
 
     // emit message
-    this.redisClient.emit({ cmd: 'user.created' }, newUser);
+    this.client.emit({ cmd: 'user.created' }, newUser);
 
     return newUser;
   }

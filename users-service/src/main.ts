@@ -12,9 +12,9 @@ async function bootstrap() {
   const configService = app.get<ConfigService>(ConfigService);
 
   app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.REDIS,
+    transport: Transport.NATS,
     options: {
-      url: configService.get<string>('REDIS_ENDPOINT'),
+      url: configService.get<string>('NATS_ENDPOINT'),
     },
   });
 
